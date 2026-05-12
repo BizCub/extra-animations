@@ -8,6 +8,8 @@ import com.zigythebird.playeranimcore.enums.PlayState;
 import net.fabricmc.api.ClientModInitializer;
 import net.fabricmc.fabric.api.client.event.lifecycle.v1.ClientTickEvents;
 import net.fabricmc.fabric.api.client.keymapping.v1.KeyMappingHelper;
+import net.fabricmc.fabric.api.event.player.AttackEntityCallback;
+import net.minecraft.world.InteractionResult;
 
 public class Fabric implements ClientModInitializer {
 
@@ -26,5 +28,10 @@ public class Fabric implements ClientModInitializer {
                         (controller, state, animSetter) -> PlayState.STOP
                 )
         );
+
+        AttackEntityCallback.EVENT.register((player, world, hand, entity, hitEntity) -> {
+            Main.playAnimation(player, Main.ANIMATION_LAYER_ID);
+            return InteractionResult.PASS;
+        });
     }
 }//?}

@@ -4,8 +4,8 @@ import com.mojang.blaze3d.platform.InputConstants;
 import com.zigythebird.playeranim.animation.PlayerAnimationController;
 import com.zigythebird.playeranim.api.PlayerAnimationAccess;
 import net.minecraft.client.KeyMapping;
-import net.minecraft.client.player.AbstractClientPlayer;
 import net.minecraft.resources.Identifier;
+import net.minecraft.world.entity.Avatar;
 
 public class Main {
     public static final String MOD_ID = /*$ mod_id*/ "extra_animations";
@@ -17,11 +17,10 @@ public class Main {
             KeyMapping.Category.MISC
     );
 
-    public static void playAnimation(AbstractClientPlayer player, Identifier id) {
+    public static void playAnimation(Avatar player, Identifier id) {
         PlayerAnimationController controller = (PlayerAnimationController) PlayerAnimationAccess.getPlayerAnimationLayer(player, ANIMATION_LAYER_ID);
-        if(controller == null) {
-            return;
+        if (controller != null) {
+            controller.triggerAnimation(id);
         }
-        controller.triggerAnimation(id);
     }
 }
