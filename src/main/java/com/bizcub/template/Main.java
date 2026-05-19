@@ -1,26 +1,51 @@
 package com.bizcub.template;
 
-import com.mojang.blaze3d.platform.InputConstants;
 import com.zigythebird.playeranim.animation.PlayerAnimationController;
 import com.zigythebird.playeranim.api.PlayerAnimationAccess;
-import net.minecraft.client.KeyMapping;
+import com.zigythebird.playeranimcore.animation.layered.modifier.AbstractFadeModifier;
+import com.zigythebird.playeranimcore.easing.EasingType;
 import net.minecraft.resources.Identifier;
 import net.minecraft.world.entity.Avatar;
 
+import java.util.Arrays;
+
 public class Main {
     public static final String MOD_ID = /*$ mod_id*/ "extra_animations";
-    public static final Identifier ANIMATION_LAYER_ID = Identifier.fromNamespaceAndPath(Main.MOD_ID, "animation.model.open_arms");
 
-    public static final KeyMapping OPEN_SCREEN = new KeyMapping(
-            "key." + MOD_ID + ".open_game_start_screen",
-            InputConstants.KEY_Y,
-            KeyMapping.Category.MISC
-    );
+//    public static final Identifier MOVEMENT_LAYER_ID = Identifier.fromNamespaceAndPath(Main.MOD_ID, "movement");
+    public static final Identifier EXTRA_LAYER_ID = Identifier.fromNamespaceAndPath(Main.MOD_ID, "extra");
 
-    public static void playAnimation(Avatar player, Identifier id) {
-        PlayerAnimationController controller = (PlayerAnimationController) PlayerAnimationAccess.getPlayerAnimationLayer(player, ANIMATION_LAYER_ID);
+    public static final Identifier NONE_ANIMATION_ID = Identifier.fromNamespaceAndPath(Main.MOD_ID, "none");
+//    public static final Identifier WALKING_ANIMATION_ID = Identifier.fromNamespaceAndPath(Main.MOD_ID, "walking");
+//    public static final Identifier IDLE_ANIMATION_ID = Identifier.fromNamespaceAndPath(Main.MOD_ID, "idle");
+    public static final Identifier LANTERN_ANIMATION_ID = Identifier.fromNamespaceAndPath(Main.MOD_ID, "lantern");
+    public static final Identifier THROW_ANIMATION_ID = Identifier.fromNamespaceAndPath(Main.MOD_ID, "throw");
+    public static final Identifier COMPASS_ANIMATION_ID = Identifier.fromNamespaceAndPath(Main.MOD_ID, "compass");
+
+    public static void playAnimation(Avatar player, Identifier layer, Identifier id) {
+        PlayerAnimationController controller = (PlayerAnimationController) PlayerAnimationAccess.getPlayerAnimationLayer(player, layer);
         if (controller != null) {
-            controller.triggerAnimation(id);
+            if (controller.getCurrentAnimation() == null || !Arrays.stream(id.toString().split(":")).toList().getLast().equals(controller.getCurrentAnimation().animation().getNameOrId())) {
+                controller.replaceAnimationWithFade(AbstractFadeModifier.standardFadeIn(4, EasingType.EASE_OUT_CIRC), id);
+            }
+        }
+    }
+
+    public static void stopAnimation(Avatar player, Identifier layer) {
+        PlayerAnimationController controller = (PlayerAnimationController) PlayerAnimationAccess.getPlayerAnimationLayer(player, layer);
+        if (controller != null) {
+            controller.replaceAnimationWithFade(AbstractFadeModifier.standardFadeIn(4, EasingType.EASE_OUT_CIRC), NONE_ANIMATION_ID);
+        }
+    }
+
+    public static void stopAnimation(Avatar player, Identifier layer, Identifier id) {
+        PlayerAnimationController controller = (PlayerAnimationController) PlayerAnimationAccess.getPlayerAnimationLayer(player, layer);
+        if (controller != null) {
+            if (controller.getCurrentAnimation() != null) {
+                if (id.toString().equals(MOD_ID + ":" + controller.getCurrentAnimation().animation().getNameOrId())) {
+                    controller.replaceAnimationWithFade(AbstractFadeModifier.standardFadeIn(4, EasingType.EASE_OUT_CIRC), NONE_ANIMATION_ID);
+                }
+            }
         }
     }
 }
