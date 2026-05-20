@@ -39,6 +39,9 @@ multiloader {
         mods.create(mod.id, Action {
             sourceSet(sourceSets.main.get())
         })
+
+        val acFile = file(atNeoForgePath)
+        if (acFile.exists()) accessTransformers.from(acFile)
     }
 
     val builtFile = tasks.jar.get().archiveFile
@@ -49,5 +52,9 @@ multiloader {
 
     tasks.named<Copy>("buildAndCollect") {
         from(builtFile)
+    }
+
+    tasks.named("createMinecraftArtifacts") {
+        dependsOn("processResources")
     }
 }
