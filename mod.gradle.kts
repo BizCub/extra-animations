@@ -20,6 +20,8 @@ project.extensions.configure<MultiLoader>("multiloader") {
 
     if (isNeoForge) {
         addRepository("https://maven.neoforged.net/releases")
+        addRepository("https://repo.redlance.org/public")
+        addDependency("implementation", "com.zigythebird.playeranim:PlayerAnimationLibNeo:${getDep("player-animation-library")}+mc.26.1")
     }
 
     project.extensions.configure<ModPublishExtension>("publishMods") {

@@ -436,6 +436,32 @@
 					}
 				}
 			}
+		},
+		"brush": {
+			"loop": true,
+			"animation_length": 0.5,
+			"bones": {
+				"right_arm": {
+					"rotation": {
+						"0.0": {
+							"vector": [-72.3583, -7.151, -2.2671]
+						},
+						"0.25": {
+							"vector": [-72.3583, 7.151, 2.2671],
+							"easing": "easeOutSine"
+						},
+						"0.5": {
+							"vector": [-72.3583, -7.151, -2.2671],
+							"easing": "easeOutSine"
+						}
+					}
+				},
+				"right_item": {
+					"rotation": {
+						"vector": [102.5, 0, 0]
+					}
+				}
+			}
 		}
 	}
 }

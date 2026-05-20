@@ -11,7 +11,12 @@ multiloader {
     }
 
     dependencies {
-        for (dep in deps) dep.configuration(dep.dependency)
+        for (dep in deps) dep.configuration(dep.dependency) {
+            exclude(group = "com.google.code.gson")
+            exclude(group = "org.slf4j")
+            exclude(group = "io.netty")
+            exclude(group = "it.unimi.dsi")
+        }
     }
 
     neoForge {
