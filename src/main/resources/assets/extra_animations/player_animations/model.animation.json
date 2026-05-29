@@ -225,7 +225,7 @@
 			}
 		},
 		"none": {
-			"animation_length": 0.05
+            "animation_length": 0.1
 		},
 		"throw": {
 			"animation_length": 0.3,

@@ -1,8 +1,8 @@
 //? neoforge {
-/*package com.bizcub.template.platform;
+/*package com.bizcub.extraAnimations.client.platform;
 
-import com.bizcub.template.Main;
-import com.bizcub.template.Utils;
+import com.bizcub.extraAnimations.Main;
+import com.bizcub.extraAnimations.client.Utils;
 import net.minecraft.client.Minecraft;
 import net.minecraft.world.item.ItemStack;
 import net.neoforged.api.distmarker.Dist;

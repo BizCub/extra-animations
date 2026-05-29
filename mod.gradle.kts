@@ -20,5 +20,6 @@ project.extensions.configure<MultiLoader>("multiloader") {
         addDependency("implementation", "net.fabricmc.fabric-api:fabric-api:${getDep("fabric-api")}")
     }
 
+    if (isFabric) addPublishDep("requires", "fabric-api")
     addPublishDep("requires", "player-animation-library")
 }

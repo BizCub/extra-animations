@@ -14,11 +14,11 @@
         "issues": "https://github.com/BizCub/${github}/issues"
     },
     "entrypoints": {
+        "main": [
+            "com.bizcub.extraAnimations.main.platform.Fabric"
+        ],
         "client": [
-            "com.bizcub.template.platform.Fabric"
+            "com.bizcub.extraAnimations.client.platform.Fabric"
         ]
-    },
-    "mixins": [
-        "${mixin}.mixins.json"
-    ]
+    }
 }
