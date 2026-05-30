@@ -10,10 +10,15 @@ project.extensions.configure<MultiLoader>("multiloader") {
 
     project.afterEvaluate {
         stonecutter.let { sc ->
+            sc.replacements {
+                string(scp >= "1.21.11") {
+                    replace("ResourceLocation", "Identifier")
+                }
+            }
         }
     }
 
-    addDependency("repo.redlance.org/public", "implementation", "com.zigythebird.playeranim:PlayerAnimationLib${if (isFabric) "Fabric" else "Neo"}:${getDep("player-animation-library")}+mc.${getMinCompatVersion(mod.mc)}")
+    addDependency("repo.redlance.org/public", "implementation", "com.zigythebird.playeranim:PlayerAnimationLib${if (isFabric) "Fabric" else "Neo"}:${getDep("player-animation-library")}+mc.${if (scp eq "1.21.8") mod.mc else getMinCompatVersion(mod.mc)}")
 
     if (isFabric) {
         addDependency("implementation", "net.fabricmc:fabric-loader:${getDep("fabric")}")

@@ -11,9 +11,9 @@ import com.zigythebird.playeranimcore.animation.layered.modifier.AbstractFadeMod
 import com.zigythebird.playeranimcore.easing.EasingType;
 import com.zigythebird.playeranimcore.enums.PlayState;
 import net.minecraft.client.Minecraft;
+import net.minecraft.client.player.AbstractClientPlayer;
 import net.minecraft.resources.Identifier;
 import net.minecraft.tags.ItemTags;
-import net.minecraft.world.entity.Avatar;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Items;
@@ -44,7 +44,7 @@ public class Utils {
     public static void clientPayloadReceiver(AnimationPayloadS2C payload) {
         Minecraft mc = Minecraft.getInstance();
         if (mc.level == null) return;
-        Avatar player = mc.level.getPlayerByUUID(payload.playerUuid());
+        AbstractClientPlayer player = (AbstractClientPlayer) mc.level.getPlayerByUUID(payload.playerUuid());
         if (player == null) return;
         if (payload.isPlay())
             Utils.playAnimation(player, payload.animationId());
@@ -52,7 +52,7 @@ public class Utils {
             Utils.stopAnimation(player, payload.animationId());
     }
 
-    public static void playAnimation(Avatar player, Identifier id) {
+    public static void playAnimation(AbstractClientPlayer player, Identifier id) {
         PlayerAnimationController controller = (PlayerAnimationController) PlayerAnimationAccess
                 .getPlayerAnimationLayer(player, Main.EXTRA_LAYER_ID);
         if (controller == null) return;
@@ -64,7 +64,7 @@ public class Utils {
         }
     }
 
-    public static void stopAnimation(Avatar player, Identifier id) {
+    public static void stopAnimation(AbstractClientPlayer player, Identifier id) {
         PlayerAnimationController controller = (PlayerAnimationController) PlayerAnimationAccess
                 .getPlayerAnimationLayer(player, Main.EXTRA_LAYER_ID);
         if (controller == null || controller.getCurrentAnimation() == null) return;
@@ -80,10 +80,12 @@ public class Utils {
         var player = client.player;
         if (player == null) return;
 
-        var item = player.getActiveItem();
-        sendAnimationC2S(Main.LANTERN_ANIMATION_ID, item.is(ItemTags.LANTERNS));
+        var item = player.getMainHandItem();
+        //~ if >=1.21.9 'Items.LANTERN' -> 'ItemTags.LANTERNS'
+        sendAnimationC2S(Main.LANTERN_ANIMATION_ID, item.is(ItemTags.LANTERNS) /*? <1.21.9 {*/ /*|| item.is(Items.SOUL_LANTERN) *//*?}*/);
         sendAnimationC2S(Main.COMPASS_ANIMATION_ID, item.is(ItemTags.COMPASSES));
         if (client.mouseHandler.isRightPressed()) {
+            //~ if >=1.21.5 'Items.EGG' -> 'ItemTags.EGGS'
             if (!player.getCooldowns().isOnCooldown(item.getItem().getDefaultInstance()) && (item.is(ItemTags.EGGS) ||
                     item.is(Items.SNOWBALL) ||
                     item.is(Items.ENDER_EYE) ||
