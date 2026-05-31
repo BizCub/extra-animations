@@ -12,4 +12,9 @@ public class Main {
     public static final Identifier THROW_ANIMATION_ID = Identifier.fromNamespaceAndPath(Main.MOD_ID, "throw");
     public static final Identifier COMPASS_ANIMATION_ID = Identifier.fromNamespaceAndPath(Main.MOD_ID, "compass");
     public static final Identifier BRUSH_ANIMATION_ID = Identifier.fromNamespaceAndPath(Main.MOD_ID, "brush");
+    public static final Identifier MAGMA_ANIMATION_ID = Identifier.fromNamespaceAndPath(Main.MOD_ID, "magma");
+    public static final Identifier LEVITATION_ANIMATION_ID = Identifier.fromNamespaceAndPath(Main.MOD_ID, "levitation");
+    public static final Identifier ITEM_ANIMATION_ID = Identifier.fromNamespaceAndPath(Main.MOD_ID, "item");
+
+    public static boolean itemAnimationIsPlayed = false;
 }

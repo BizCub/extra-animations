@@ -13,7 +13,9 @@ import com.zigythebird.playeranimcore.enums.PlayState;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.player.AbstractClientPlayer;
 import net.minecraft.resources.Identifier;
+import net.minecraft.tags.DamageTypeTags;
 import net.minecraft.tags.ItemTags;
+import net.minecraft.world.effect.MobEffects;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Items;
@@ -79,6 +81,20 @@ public class Utils {
     public static void onTick(Minecraft client) {
         var player = client.player;
         if (player == null) return;
+
+        if (player.hurtTime == 9
+                && player.getLastDamageSource() != null
+                && player.getLastDamageSource().is(DamageTypeTags.IS_FIRE)
+        ) {
+            sendAnimationC2S(Main.MAGMA_ANIMATION_ID, true);
+        }
+
+        sendAnimationC2S(Main.LEVITATION_ANIMATION_ID, player.hasEffect(MobEffects.LEVITATION));
+
+        if (player.getInventory().contains(itemStack -> itemStack.is(Items.DIAMOND)) && !Main.itemAnimationIsPlayed) {
+            sendAnimationC2S(Main.ITEM_ANIMATION_ID, true);
+            Main.itemAnimationIsPlayed = true;
+        }
 
         var item = player.getMainHandItem();
         //~ if >=1.21.9 'Items.LANTERN' -> 'ItemTags.LANTERNS'
