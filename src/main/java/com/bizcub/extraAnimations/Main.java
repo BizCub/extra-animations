@@ -15,6 +15,8 @@ public class Main {
     public static final Identifier MAGMA_ANIMATION_ID = Identifier.fromNamespaceAndPath(Main.MOD_ID, "magma");
     public static final Identifier LEVITATION_ANIMATION_ID = Identifier.fromNamespaceAndPath(Main.MOD_ID, "levitation");
     public static final Identifier ITEM_ANIMATION_ID = Identifier.fromNamespaceAndPath(Main.MOD_ID, "item");
+    public static final Identifier WATER_ANIMATION_ID = Identifier.fromNamespaceAndPath(Main.MOD_ID, "water");
+    public static final Identifier SLOW_FALLING_ANIMATION_ID = Identifier.fromNamespaceAndPath(Main.MOD_ID, "slow_falling");
 
     public static boolean itemAnimationIsPlayed = false;
 }

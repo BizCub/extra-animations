@@ -14,6 +14,7 @@ import net.minecraft.client.Minecraft;
 import net.minecraft.client.player.AbstractClientPlayer;
 import net.minecraft.resources.Identifier;
 import net.minecraft.tags.DamageTypeTags;
+import net.minecraft.tags.FluidTags;
 import net.minecraft.tags.ItemTags;
 import net.minecraft.world.effect.MobEffects;
 import net.minecraft.world.entity.player.Player;
@@ -90,11 +91,20 @@ public class Utils {
         }
 
         sendAnimationC2S(Main.LEVITATION_ANIMATION_ID, player.hasEffect(MobEffects.LEVITATION));
+        sendAnimationC2S(Main.SLOW_FALLING_ANIMATION_ID, player.hasEffect(MobEffects.SLOW_FALLING) && !player.onGround() && !player.getAbilities().flying);
 
         if (player.getInventory().contains(itemStack -> itemStack.is(Items.DIAMOND)) && !Main.itemAnimationIsPlayed) {
             sendAnimationC2S(Main.ITEM_ANIMATION_ID, true);
             Main.itemAnimationIsPlayed = true;
         }
+
+        float bodyHeight = player.getBbHeight();
+        double waterHeight = player.getFluidHeight(FluidTags.WATER);
+        double submersionPercent = waterHeight / bodyHeight;
+        sendAnimationC2S(Main.WATER_ANIMATION_ID, player.isInWater()
+                && submersionPercent < 0.8
+                && submersionPercent > 0.5
+        );
 
         var item = player.getMainHandItem();
         //~ if >=1.21.9 'Items.LANTERN' -> 'ItemTags.LANTERNS'
@@ -102,12 +112,12 @@ public class Utils {
         sendAnimationC2S(Main.COMPASS_ANIMATION_ID, item.is(ItemTags.COMPASSES));
         if (client.mouseHandler.isRightPressed()) {
             //~ if >=1.21.5 'Items.EGG' -> 'ItemTags.EGGS'
-            if (!player.getCooldowns().isOnCooldown(item.getItem().getDefaultInstance()) && (item.is(ItemTags.EGGS) ||
-                    item.is(Items.SNOWBALL) ||
-                    item.is(Items.ENDER_EYE) ||
-                    item.is(Items.SPLASH_POTION) ||
-                    item.is(Items.LINGERING_POTION) ||
-                    item.is(Items.EXPERIENCE_BOTTLE)
+            if (!player.getCooldowns().isOnCooldown(item.getItem().getDefaultInstance()) && (item.is(ItemTags.EGGS)
+                    || item.is(Items.SNOWBALL)
+                    || item.is(Items.ENDER_EYE)
+                    || item.is(Items.SPLASH_POTION)
+                    || item.is(Items.LINGERING_POTION)
+                    || item.is(Items.EXPERIENCE_BOTTLE)
             )) {
                 sendAnimationC2S(Main.THROW_ANIMATION_ID, true);
             }
