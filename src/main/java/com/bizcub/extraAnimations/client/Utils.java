@@ -111,16 +111,6 @@ public class Utils {
         sendAnimationC2S(Main.LANTERN_ANIMATION_ID, item.is(ItemTags.LANTERNS) /*? <1.21.9 {*/ /*|| item.is(Items.SOUL_LANTERN) *//*?}*/);
         sendAnimationC2S(Main.COMPASS_ANIMATION_ID, item.is(ItemTags.COMPASSES));
         if (client.mouseHandler.isRightPressed()) {
-            //~ if >=1.21.5 'Items.EGG' -> 'ItemTags.EGGS'
-            if (!player.getCooldowns().isOnCooldown(item.getItem().getDefaultInstance()) && (item.is(ItemTags.EGGS)
-                    || item.is(Items.SNOWBALL)
-                    || item.is(Items.ENDER_EYE)
-                    || item.is(Items.SPLASH_POTION)
-                    || item.is(Items.LINGERING_POTION)
-                    || item.is(Items.EXPERIENCE_BOTTLE)
-            )) {
-                sendAnimationC2S(Main.THROW_ANIMATION_ID, true);
-            }
             if (item.is(Items.BRUSH)) {
                 sendAnimationC2S(Main.BRUSH_ANIMATION_ID, true);
             }
@@ -129,9 +119,19 @@ public class Utils {
         }
     }
 
-    public static void onUseItem(Player player, ItemStack itemStack) {
-        if (!player.getCooldowns().isOnCooldown(itemStack.getItem().getDefaultInstance()) && (itemStack.is(Items.ENDER_PEARL) ||
-                itemStack.is(Items.WIND_CHARGE)
+    public static void onUseItem(Player player, ItemStack item) {
+        if (!player.getCooldowns().isOnCooldown(item.getItem().getDefaultInstance()) && (item.is(Items.ENDER_PEARL) ||
+                item.is(Items.WIND_CHARGE)
+        )) {
+            sendAnimationC2S(Main.THROW_ANIMATION_ID, true);
+        }
+        //~ if >=1.21.5 'Items.EGG' -> 'ItemTags.EGGS'
+        if (!player.getCooldowns().isOnCooldown(item.getItem().getDefaultInstance()) && (item.is(ItemTags.EGGS)
+                || item.is(Items.SNOWBALL)
+                || item.is(Items.ENDER_EYE)
+                || item.is(Items.SPLASH_POTION)
+                || item.is(Items.LINGERING_POTION)
+                || item.is(Items.EXPERIENCE_BOTTLE)
         )) {
             sendAnimationC2S(Main.THROW_ANIMATION_ID, true);
         }
