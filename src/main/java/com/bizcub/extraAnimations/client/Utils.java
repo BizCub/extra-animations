@@ -13,6 +13,7 @@ import com.zigythebird.playeranimcore.enums.PlayState;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.player.AbstractClientPlayer;
 import net.minecraft.resources.Identifier;
+/*? >=26.2*/ import net.minecraft.tags.BlockItemTags;
 import net.minecraft.tags.DamageTypeTags;
 import net.minecraft.tags.FluidTags;
 import net.minecraft.tags.ItemTags;
@@ -107,8 +108,7 @@ public class Utils {
         );
 
         var item = player.getMainHandItem();
-        //~ if >=1.21.9 'Items.LANTERN' -> 'ItemTags.LANTERNS'
-        sendAnimationC2S(Main.LANTERN_ANIMATION_ID, item.is(ItemTags.LANTERNS) /*? <1.21.9 {*/ /*|| item.is(Items.SOUL_LANTERN) *//*?}*/);
+        sendAnimationC2S(Main.LANTERN_ANIMATION_ID, item.is(BlockItemTags.LANTERNS.item()));
         sendAnimationC2S(Main.COMPASS_ANIMATION_ID, item.is(ItemTags.COMPASSES));
         if (client.mouseHandler.isRightPressed()) {
             if (item.is(Items.BRUSH)) {

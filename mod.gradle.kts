@@ -11,8 +11,14 @@ project.extensions.configure<MultiLoader>("multiloader") {
     project.afterEvaluate {
         stonecutter.let { sc ->
             sc.replacements {
+                string(scp >= "26.2") {
+                    replace("item.is(ItemTags.LANTERNS)", "item.is(BlockItemTags.LANTERNS.item())")
+                }
                 string(scp >= "1.21.11") {
                     replace("ResourceLocation", "Identifier")
+                }
+                string(scp >= "1.21.9") {
+                    replace("item.is(Items.LANTERN) || item.is(Items.SOUL_LANTERN)", "item.is(ItemTags.LANTERNS)")
                 }
             }
         }
