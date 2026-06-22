@@ -16,6 +16,7 @@ multiloader {
             exclude(group = "org.slf4j")
             exclude(group = "io.netty")
             exclude(group = "it.unimi.dsi")
+            exclude(group = "org.joml")
         }
     }
 
