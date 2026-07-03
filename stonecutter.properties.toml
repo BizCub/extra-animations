@@ -1,8 +1,15 @@
-# Fabric versions see: https://fabricmc.net/develop
-# Forge versions see: https://files.minecraftforge.net
-# NeoForge versions see: https://neoforged.net
-# Extra dependencies see: https://linkie.shedaniel.dev/dependencies
+### Mod properties
+mod.name="Extra Animations"
+mod.id="extra_animations"
+mod.version='1.0'
+mod.description="Adds some missing animations to the game"
 
+### Publishing
+mod.modrinth="R2MIQqZs"
+mod.curseforge="1565468"
+mod.github="extra-animations"
+
+### Subprojects
 ["26.2"]
 pub-end="latest"
 
