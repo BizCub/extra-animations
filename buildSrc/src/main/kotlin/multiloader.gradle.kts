@@ -17,6 +17,9 @@ multiloader {
         }
     }
 
+    setMREnvironment(mrEnvs.clientOnly)
+    setCFEnvironment(cfEnvs.client)
+
     addDependency(
         dependency = "com.zigythebird.playeranim:PlayerAnimationLib${if (isFabric) "Fabric" else "Neo"}:${getDep("player-animation-library")}+mc.${if (scp eq "1.21.8") mod.mc else getMinCompatVersion(mod.mc)}",
         repository = "repo.redlance.org/public",
@@ -32,7 +35,7 @@ multiloader {
         addDependency(
             dependency = "net.fabricmc.fabric-api:fabric-api:${getDep("fabric-api")}",
             isPublishDepEnabled = true,
-            publishRequirement = "requires"
+            isPublishDepRequired = true
         )
     }
 }
