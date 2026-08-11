@@ -1,8 +1,8 @@
 //? fabric {
-package com.bizcub.extraAnimations.main.platform;
+package io.github.bizcub.extraAnimations.main.platform;
 
-import com.bizcub.extraAnimations.network.AnimationPayloadC2S;
-import com.bizcub.extraAnimations.network.AnimationPayloadS2C;
+import io.github.bizcub.extraAnimations.network.AnimationPayloadC2S;
+import io.github.bizcub.extraAnimations.network.AnimationPayloadS2C;
 import net.fabricmc.api.ModInitializer;
 import net.fabricmc.fabric.api.networking.v1.PayloadTypeRegistry;
 import net.fabricmc.fabric.api.networking.v1.ServerPlayNetworking;

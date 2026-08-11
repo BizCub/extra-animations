@@ -1,8 +1,8 @@
-package com.bizcub.extraAnimations.client;
+package io.github.bizcub.extraAnimations.client;
 
-import com.bizcub.extraAnimations.Main;
-import com.bizcub.extraAnimations.network.AnimationPayloadC2S;
-import com.bizcub.extraAnimations.network.AnimationPayloadS2C;
+import io.github.bizcub.extraAnimations.Main;
+import io.github.bizcub.extraAnimations.network.AnimationPayloadC2S;
+import io.github.bizcub.extraAnimations.network.AnimationPayloadS2C;
 import com.zigythebird.playeranim.animation.PlayerAnimResources;
 import com.zigythebird.playeranim.animation.PlayerAnimationController;
 import com.zigythebird.playeranim.api.PlayerAnimationAccess;

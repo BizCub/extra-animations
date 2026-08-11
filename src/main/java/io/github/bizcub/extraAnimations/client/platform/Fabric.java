@@ -1,8 +1,8 @@
 //? fabric {
-package com.bizcub.extraAnimations.client.platform;
+package io.github.bizcub.extraAnimations.client.platform;
 
-import com.bizcub.extraAnimations.client.Utils;
-import com.bizcub.extraAnimations.network.AnimationPayloadS2C;
+import io.github.bizcub.extraAnimations.client.Utils;
+import io.github.bizcub.extraAnimations.network.AnimationPayloadS2C;
 import net.fabricmc.api.ClientModInitializer;
 import net.fabricmc.fabric.api.client.event.lifecycle.v1.ClientTickEvents;
 import net.fabricmc.fabric.api.client.networking.v1.ClientPlayNetworking;

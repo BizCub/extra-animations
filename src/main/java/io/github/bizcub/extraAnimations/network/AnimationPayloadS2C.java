@@ -1,6 +1,6 @@
-package com.bizcub.extraAnimations.network;
+package io.github.bizcub.extraAnimations.network;
 
-import com.bizcub.extraAnimations.Utils;
+import io.github.bizcub.extraAnimations.Utils;
 import io.netty.buffer.ByteBuf;
 import net.minecraft.core.UUIDUtil;
 import net.minecraft.network.codec.ByteBufCodecs;

@@ -1,10 +1,10 @@
 //? neoforge {
-/*package com.bizcub.extraAnimations.main.platform;
+/*package io.github.bizcub.extraAnimations.main.platform;
 
-import com.bizcub.extraAnimations.Main;
-import com.bizcub.extraAnimations.client.Utils;
-import com.bizcub.extraAnimations.network.AnimationPayloadC2S;
-import com.bizcub.extraAnimations.network.AnimationPayloadS2C;
+import io.github.bizcub.extraAnimations.Main;
+import io.github.bizcub.extraAnimations.client.Utils;
+import io.github.bizcub.extraAnimations.network.AnimationPayloadC2S;
+import io.github.bizcub.extraAnimations.network.AnimationPayloadS2C;
 import net.neoforged.bus.api.SubscribeEvent;
 import net.neoforged.fml.common.EventBusSubscriber;
 import net.neoforged.neoforge.network.PacketDistributor;

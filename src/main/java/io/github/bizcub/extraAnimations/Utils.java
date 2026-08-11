@@ -1,4 +1,4 @@
-package com.bizcub.extraAnimations;
+package io.github.bizcub.extraAnimations;
 
 import net.minecraft.resources.Identifier;
 
