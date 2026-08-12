@@ -19,7 +19,7 @@ multiloader {
     setCFEnvironment(cfEnvs.client)
 
     versionRange("26.2", to = "latest")
-    versionRange("1.21.8", from = "1.21.7", to = "1.21.11")
+    versionRange("1.21.8", from = "1.21.7")
 
     addDependency(
         dependency = "com.zigythebird.playeranim:PlayerAnimationLib${if (isFabric) "Fabric" else "Neo"}:${getDep("player-animation-library")}+mc.${if (scp eq "1.21.8") mod.mc else getMinCompatVersion(mod.mc)}",
