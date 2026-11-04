@@ -24,7 +24,7 @@ public class Fabric implements ClientModInitializer {
 
         UseItemCallback.EVENT.register((player, level, hand) -> {
             ItemStack stack = player.getItemInHand(hand);
-            Utils.onUseItem(player, stack);
+            Utils.onUseItem(player, stack, hand);
             return InteractionResult.PASS;
         });
     }

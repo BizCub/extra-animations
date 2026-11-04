@@ -29,6 +29,6 @@ public class NeoForge {
     @SubscribeEvent
     public static void onUseItem(PlayerInteractEvent.RightClickItem event) {
         ItemStack stack = event.getItemStack();
-        Utils.onUseItem(event.getEntity(), stack);
+        Utils.onUseItem(event.getEntity(), stack, event.getHand());
     }
 }*///?}
