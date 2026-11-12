@@ -1,16 +1,16 @@
-//? neoforge {
-/*package io.github.bizcub.extraAnimations.main.platform;
+package io.github.bizcub.extraAnimations.platform;
 
 import io.github.bizcub.extraAnimations.Main;
-import io.github.bizcub.extraAnimations.client.Utils;
 import io.github.bizcub.extraAnimations.network.AnimationPayloadC2S;
 import io.github.bizcub.extraAnimations.network.AnimationPayloadS2C;
 import net.neoforged.bus.api.SubscribeEvent;
 import net.neoforged.fml.common.EventBusSubscriber;
+import net.neoforged.fml.common.Mod;
 import net.neoforged.neoforge.network.PacketDistributor;
 import net.neoforged.neoforge.network.event.RegisterPayloadHandlersEvent;
 import net.neoforged.neoforge.network.registration.PayloadRegistrar;
 
+@Mod(Main.MOD_ID)
 @EventBusSubscriber(modid = Main.MOD_ID)
 public class NeoForge {
 
@@ -22,8 +22,6 @@ public class NeoForge {
                 PacketDistributor.sendToAllPlayers(new AnimationPayloadS2C(payload.playerUuid(), payload.animationId(), payload.isPlay()))
         ));
 
-        registrar.playToClient(AnimationPayloadS2C.TYPE, AnimationPayloadS2C.CODEC, (payload, context) -> context.enqueueWork(() ->
-                Utils.clientPayloadReceiver(payload)
-        ));
+        registrar.playToClient(AnimationPayloadS2C.TYPE, AnimationPayloadS2C.CODEC);
     }
-}*///?}
+}

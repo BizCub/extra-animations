@@ -1,5 +1,4 @@
-//? fabric {
-package io.github.bizcub.extraAnimations.main.platform;
+package io.github.bizcub.extraAnimations.platform;
 
 import io.github.bizcub.extraAnimations.network.AnimationPayloadC2S;
 import io.github.bizcub.extraAnimations.network.AnimationPayloadS2C;
@@ -11,10 +10,8 @@ public class Fabric implements ModInitializer {
 
     @Override
     public void onInitialize() {
-        /*~ if >=26.1 'playC2S' -> 'serverboundPlay'*/ /*~ if >=26.1 'playS2C' -> 'clientboundPlay' {*/
         PayloadTypeRegistry.serverboundPlay().register(AnimationPayloadC2S.TYPE, AnimationPayloadC2S.CODEC);
         PayloadTypeRegistry.clientboundPlay().register(AnimationPayloadS2C.TYPE, AnimationPayloadS2C.CODEC);
-        /*~}*/
 
         ServerPlayNetworking.registerGlobalReceiver(AnimationPayloadC2S.TYPE, (payload, context) ->
                 context.server().execute(() -> context.server().getPlayerList().getPlayers().forEach(player ->
@@ -22,4 +19,4 @@ public class Fabric implements ModInitializer {
                 ))
         );
     }
-}//?}
+}

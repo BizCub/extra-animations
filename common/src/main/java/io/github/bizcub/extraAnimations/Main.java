@@ -3,7 +3,7 @@ package io.github.bizcub.extraAnimations;
 import net.minecraft.resources.Identifier;
 
 public class Main {
-    public static final String MOD_ID = /*$ mod_id*/ "extra_animations";
+    public static final String MOD_ID = "extra_animations";
 
     public static final Identifier BRUSH_ANIMATION_ID = Identifier.fromNamespaceAndPath(Main.MOD_ID, "brush");
     public static final Identifier BRUSH_OFFHAND_ANIMATION_ID = Identifier.fromNamespaceAndPath(Main.MOD_ID, "brush_offhand");

@@ -1,5 +1,4 @@
-//? fabric {
-package io.github.bizcub.extraAnimations.client.platform;
+package io.github.bizcub.extraAnimations.platform;
 
 import io.github.bizcub.extraAnimations.client.Utils;
 import io.github.bizcub.extraAnimations.network.AnimationPayloadS2C;
@@ -10,11 +9,11 @@ import net.fabricmc.fabric.api.event.player.UseItemCallback;
 import net.minecraft.world.InteractionResult;
 import net.minecraft.world.item.ItemStack;
 
-public class Fabric implements ClientModInitializer {
+public class FabricClient implements ClientModInitializer {
 
     @Override
     public void onInitializeClient() {
-        Utils.registerLayers();
+        Utils.init(ClientPlayNetworking::send);
 
         ClientPlayNetworking.registerGlobalReceiver(AnimationPayloadS2C.TYPE, (payload, context) ->
                 context.client().execute(() -> Utils.clientPayloadReceiver(payload))
@@ -28,4 +27,4 @@ public class Fabric implements ClientModInitializer {
             return InteractionResult.PASS;
         });
     }
-}//?}
+}

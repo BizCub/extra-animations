@@ -12,11 +12,12 @@ import com.zigythebird.playeranimcore.easing.EasingType;
 import com.zigythebird.playeranimcore.enums.PlayState;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.function.Consumer;
 
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.player.AbstractClientPlayer;
 import net.minecraft.resources.Identifier;
-/*? >=26.2*/ import net.minecraft.tags.BlockItemTags;
+import net.minecraft.tags.BlockItemTags;
 import net.minecraft.tags.DamageTypeTags;
 import net.minecraft.tags.FluidTags;
 import net.minecraft.tags.ItemTags;
@@ -26,19 +27,14 @@ import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Items;
 
-
-//? fabric {
-import net.fabricmc.fabric.api.client.networking.v1.ClientPlayNetworking;
-//?} neoforge {
-/*/^? >=1.21.6^/ import net.neoforged.neoforge.client.network.ClientPacketDistributor;
-import net.neoforged.neoforge.network.PacketDistributor;*///?}
-
 public class Utils {
 
     private static final Map<Identifier, Boolean> LAST_SENT_STATES = new HashMap<>();
     private static Player lastStatePlayer;
+    private static Consumer<AnimationPayloadC2S> packetSender;
 
-    public static void registerLayers() {
+    public static void init(Consumer<AnimationPayloadC2S> sender) {
+        packetSender = sender;
         PlayerAnimationFactory.ANIMATION_DATA_FACTORY.registerFactory(Main.EXTRA_LAYER_ID, 2000,
                 player -> new PlayerAnimationController(player,
                         (controller, state, animSetter) -> PlayState.STOP
@@ -53,9 +49,7 @@ public class Utils {
 
     public static void sendAnimationC2S(Identifier id, boolean isPlay) {
         AnimationPayloadC2S payload = new AnimationPayloadC2S(Minecraft.getInstance().player.getUUID(), id, isPlay);
-        /*? fabric*/ ClientPlayNetworking.send(payload);
-        //~ if >=1.21.6 'PacketDistributor' -> 'ClientPacketDistributor'
-        /*? neoforge*/ //ClientPacketDistributor.sendToServer(payload);
+        packetSender.accept(payload);
     }
 
     public static void sendAnimationStateC2S(Identifier id, boolean isPlay) {
@@ -164,7 +158,6 @@ public class Utils {
         )) {
             sendAnimationC2S(throwAnimationId, true);
         }
-        //~ if >=1.21.5 'Items.EGG' -> 'ItemTags.EGGS'
         if (!player.getCooldowns().isOnCooldown(item.getItem().getDefaultInstance()) && (item.is(ItemTags.EGGS)
                 || item.is(Items.SNOWBALL)
                 || item.is(Items.ENDER_EYE)
