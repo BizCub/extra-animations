@@ -11,7 +11,9 @@ import com.zigythebird.playeranimcore.animation.layered.modifier.AbstractFadeMod
 import com.zigythebird.playeranimcore.easing.EasingType;
 import com.zigythebird.playeranimcore.enums.PlayState;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.Map;
+import java.util.Set;
 import java.util.function.Consumer;
 
 import net.minecraft.client.Minecraft;
@@ -29,7 +31,8 @@ import net.minecraft.world.item.Items;
 
 public class Utils {
 
-    private static final Map<Identifier, Boolean> LAST_SENT_STATES = new HashMap<>();
+    private static final Map<Identifier, Identifier> LAST_SENT_ANIMATIONS = new HashMap<>();
+    private static final Set<Identifier> PENDING_ANIMATION_LAYERS = new HashSet<>();
     private static Player lastStatePlayer;
     private static Consumer<AnimationPayloadC2S> packetSender;
 
@@ -48,15 +51,28 @@ public class Utils {
     }
 
     public static void sendAnimationC2S(Identifier id, boolean isPlay) {
+        if (isPlay) {
+            Identifier layer = isOffhandAnimation(id) ? Main.LANTERN_OFFHAND_LAYER_ID : Main.EXTRA_LAYER_ID;
+            LAST_SENT_ANIMATIONS.put(layer, id);
+            PENDING_ANIMATION_LAYERS.add(layer);
+        }
         AnimationPayloadC2S payload = new AnimationPayloadC2S(Minecraft.getInstance().player.getUUID(), id, isPlay);
         packetSender.accept(payload);
     }
 
-    public static void sendAnimationStateC2S(Identifier id, boolean isPlay) {
-        Boolean previousState = LAST_SENT_STATES.put(id, isPlay);
-        if (previousState == null || previousState != isPlay) {
-            sendAnimationC2S(id, isPlay);
+    private static void sendSelectedAnimation(Identifier layer, Identifier id) {
+        Identifier previous = LAST_SENT_ANIMATIONS.get(layer);
+        if (previous != null && (previous.equals(Main.MAGMA_ANIMATION_ID) || previous.equals(Main.ITEM_ANIMATION_ID)
+                || previous.equals(Main.THROW_ANIMATION_ID) || previous.equals(Main.THROW_OFFHAND_ANIMATION_ID))) {
+            if (PENDING_ANIMATION_LAYERS.contains(layer)) return;
+            PlayerAnimationController controller = (PlayerAnimationController) PlayerAnimationAccess
+                    .getPlayerAnimationLayer(Minecraft.getInstance().player, layer);
+            if (controller == null || !controller.hasAnimationFinished()) return;
         }
+        if (java.util.Objects.equals(previous, id)) return;
+        if (previous != null) sendAnimationC2S(previous, false);
+        LAST_SENT_ANIMATIONS.remove(layer);
+        if (id != null) sendAnimationC2S(id, true);
     }
 
     public static void clientPayloadReceiver(AnimationPayloadS2C payload) {
@@ -64,6 +80,10 @@ public class Utils {
         if (mc.level == null) return;
         AbstractClientPlayer player = (AbstractClientPlayer) mc.level.getPlayerByUUID(payload.playerUuid());
         if (player == null) return;
+        Identifier layer = isOffhandAnimation(payload.animationId()) ? Main.LANTERN_OFFHAND_LAYER_ID : Main.EXTRA_LAYER_ID;
+        if (player == mc.player && payload.isPlay() && payload.animationId().equals(LAST_SENT_ANIMATIONS.get(layer))) {
+            PENDING_ANIMATION_LAYERS.remove(layer);
+        }
         if (payload.isPlay())
             Utils.playAnimation(player, payload.animationId());
         else
@@ -75,7 +95,8 @@ public class Utils {
                 .getPlayerAnimationLayer(player, isOffhandAnimation(id) ? Main.LANTERN_OFFHAND_LAYER_ID : Main.EXTRA_LAYER_ID);
         if (controller == null) return;
 
-        if (controller.getCurrentAnimation() == null || !controller.getCurrentAnimation().animation().equals(PlayerAnimResources.getAnimation(id))) {
+        if (controller.getCurrentAnimation() == null || controller.hasAnimationFinished()
+                || !controller.getCurrentAnimation().animation().equals(PlayerAnimResources.getAnimation(id))) {
             controller.replaceAnimationWithFade(
                     AbstractFadeModifier.standardFadeIn(4, EasingType.EASE_OUT_CIRC), id
             );
@@ -105,13 +126,15 @@ public class Utils {
     public static void onTick(Minecraft client) {
         var player = client.player;
         if (player == null) {
-            LAST_SENT_STATES.clear();
+            LAST_SENT_ANIMATIONS.clear();
+            PENDING_ANIMATION_LAYERS.clear();
             lastStatePlayer = null;
             return;
         }
 
         if (lastStatePlayer != player) {
-            LAST_SENT_STATES.clear();
+            LAST_SENT_ANIMATIONS.clear();
+            PENDING_ANIMATION_LAYERS.clear();
             lastStatePlayer = player;
         }
 
@@ -122,9 +145,6 @@ public class Utils {
             sendAnimationC2S(Main.MAGMA_ANIMATION_ID, true);
         }
 
-        sendAnimationStateC2S(Main.LEVITATION_ANIMATION_ID, player.hasEffect(MobEffects.LEVITATION));
-        sendAnimationStateC2S(Main.SLOW_FALLING_ANIMATION_ID, player.hasEffect(MobEffects.SLOW_FALLING) && !player.onGround() && !player.getAbilities().flying);
-
         if (player.getInventory().contains(itemStack -> itemStack.is(Items.DIAMOND)) && !Main.itemAnimationIsPlayed) {
             sendAnimationC2S(Main.ITEM_ANIMATION_ID, true);
             Main.itemAnimationIsPlayed = true;
@@ -133,20 +153,22 @@ public class Utils {
         float bodyHeight = player.getBbHeight();
         double waterHeight = player.getFluidHeight(FluidTags.WATER);
         double submersionPercent = waterHeight / bodyHeight;
-        sendAnimationStateC2S(Main.WATER_ANIMATION_ID, player.isInWater()
-                && submersionPercent < 0.8
-                && submersionPercent > 0.5
-        );
-
         var item = player.getMainHandItem();
-        sendAnimationStateC2S(Main.LANTERN_ANIMATION_ID, item.is(BlockItemTags.LANTERNS.item()));
-
         var offhandItem = player.getOffhandItem();
-        sendAnimationStateC2S(Main.LANTERN_OFFHAND_ANIMATION_ID, offhandItem.is(BlockItemTags.LANTERNS.item()));
-        sendAnimationStateC2S(Main.COMPASS_ANIMATION_ID, item.is(ItemTags.COMPASSES));
-        sendAnimationStateC2S(Main.COMPASS_OFFHAND_ANIMATION_ID, offhandItem.is(ItemTags.COMPASSES));
-        sendAnimationStateC2S(Main.BRUSH_ANIMATION_ID, client.mouseHandler.isRightPressed() && item.is(Items.BRUSH));
-        sendAnimationStateC2S(Main.BRUSH_OFFHAND_ANIMATION_ID, client.mouseHandler.isRightPressed() && offhandItem.is(Items.BRUSH));
+        Identifier animation = null;
+        if (client.mouseHandler.isRightPressed() && item.is(Items.BRUSH)) animation = Main.BRUSH_ANIMATION_ID;
+        else if (player.hasEffect(MobEffects.LEVITATION)) animation = Main.LEVITATION_ANIMATION_ID;
+        else if (player.hasEffect(MobEffects.SLOW_FALLING) && !player.onGround() && !player.getAbilities().flying) animation = Main.SLOW_FALLING_ANIMATION_ID;
+        else if (player.isInWater() && submersionPercent > 0.5 && submersionPercent < 0.8) animation = Main.WATER_ANIMATION_ID;
+        else if (item.is(BlockItemTags.LANTERNS.item())) animation = Main.LANTERN_ANIMATION_ID;
+        else if (item.is(ItemTags.COMPASSES)) animation = Main.COMPASS_ANIMATION_ID;
+        sendSelectedAnimation(Main.EXTRA_LAYER_ID, animation);
+
+        Identifier offhandAnimation = null;
+        if (client.mouseHandler.isRightPressed() && offhandItem.is(Items.BRUSH)) offhandAnimation = Main.BRUSH_OFFHAND_ANIMATION_ID;
+        else if (offhandItem.is(BlockItemTags.LANTERNS.item())) offhandAnimation = Main.LANTERN_OFFHAND_ANIMATION_ID;
+        else if (offhandItem.is(ItemTags.COMPASSES)) offhandAnimation = Main.COMPASS_OFFHAND_ANIMATION_ID;
+        sendSelectedAnimation(Main.LANTERN_OFFHAND_LAYER_ID, offhandAnimation);
     }
 
     public static void onUseItem(Player player, ItemStack item, InteractionHand hand) {
